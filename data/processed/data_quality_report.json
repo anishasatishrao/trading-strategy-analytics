@@ -1,7 +1,7 @@
 [
   {
     "symbol": "RELIANCE",
-    "input_rows": 1304,
+    "input_rows": 1305,
     "count_null_date": 0,
     "count_null_symbol": 0,
     "count_duplicate_symbol_date": 0,
@@ -11,13 +11,13 @@
     "count_open_close_outside_range": 0,
     "unsorted_dates_detected_in_raw_input": false,
     "rejected_rows": 0,
-    "valid_rows": 1304,
+    "valid_rows": 1305,
     "duplicate_count": 0,
     "insufficient_data_warning": false
   },
   {
     "symbol": "TCS",
-    "input_rows": 1304,
+    "input_rows": 1305,
     "count_null_date": 0,
     "count_null_symbol": 0,
     "count_duplicate_symbol_date": 0,
@@ -27,13 +27,13 @@
     "count_open_close_outside_range": 0,
     "unsorted_dates_detected_in_raw_input": false,
     "rejected_rows": 0,
-    "valid_rows": 1304,
+    "valid_rows": 1305,
     "duplicate_count": 0,
     "insufficient_data_warning": false
   },
   {
     "symbol": "HDFCBANK",
-    "input_rows": 1304,
+    "input_rows": 1305,
     "count_null_date": 0,
     "count_null_symbol": 0,
     "count_duplicate_symbol_date": 0,
@@ -43,13 +43,13 @@
     "count_open_close_outside_range": 0,
     "unsorted_dates_detected_in_raw_input": false,
     "rejected_rows": 0,
-    "valid_rows": 1304,
+    "valid_rows": 1305,
     "duplicate_count": 0,
     "insufficient_data_warning": false
   },
   {
     "symbol": "INFY",
-    "input_rows": 1304,
+    "input_rows": 1305,
     "count_null_date": 0,
     "count_null_symbol": 0,
     "count_duplicate_symbol_date": 0,
@@ -59,13 +59,13 @@
     "count_open_close_outside_range": 0,
     "unsorted_dates_detected_in_raw_input": false,
     "rejected_rows": 0,
-    "valid_rows": 1304,
+    "valid_rows": 1305,
     "duplicate_count": 0,
     "insufficient_data_warning": false
   },
   {
     "symbol": "ITC",
-    "input_rows": 1304,
+    "input_rows": 1305,
     "count_null_date": 0,
     "count_null_symbol": 0,
     "count_duplicate_symbol_date": 0,
@@ -75,13 +75,13 @@
     "count_open_close_outside_range": 0,
     "unsorted_dates_detected_in_raw_input": false,
     "rejected_rows": 0,
-    "valid_rows": 1304,
+    "valid_rows": 1305,
     "duplicate_count": 0,
     "insufficient_data_warning": false
   },
   {
     "symbol": "NIFTY50",
-    "input_rows": 1304,
+    "input_rows": 1305,
     "count_null_date": 0,
     "count_null_symbol": 0,
     "count_duplicate_symbol_date": 0,
@@ -91,7 +91,7 @@
     "count_open_close_outside_range": 0,
     "unsorted_dates_detected_in_raw_input": false,
     "rejected_rows": 0,
-    "valid_rows": 1304,
+    "valid_rows": 1305,
     "duplicate_count": 0,
     "insufficient_data_warning": false
   }

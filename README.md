@@ -267,7 +267,37 @@ answered HTTP 200 and `/healthz` returned `ok`, the pipeline ran inside the
 container and uploaded `features.parquet` to the `trading-processed`
 MinIO bucket, and the dashboard served correctly after a restart.
 
-## 16. Running the SQL Analytics
+## 16. Deploying to Streamlit Community Cloud
+
+Streamlit Community Cloud only clones this GitHub repo and runs
+`streamlit run app/dashboard.py` — it has no MinIO, no Docker Compose, and
+no prior pipeline run. Two things make this still work out of the box:
+
+1. The demo backtest outputs (`data/processed/*.parquet` and
+   `summary_*.json`, generated from the committed SYNTHETIC sample data in
+   `data/sample/`) are committed to this repo for exactly this reason —
+   normally generated/reproducible outputs wouldn't be committed, but a
+   hosted dashboard needs *something* to read on first load.
+2. As a safety net, `app/dashboard.py` checks for those files on startup
+   and regenerates them from the synthetic sample data automatically if
+   they're ever missing (it never calls yfinance automatically, since a
+   hosted environment's outbound network behavior isn't guaranteed).
+
+**Steps:**
+
+1. Push this repo to GitHub (see Section 25, "Git & Pushing to GitHub", below).
+2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with
+   GitHub.
+3. Click "New app", pick this repo and the `main` branch.
+4. Set the main file path to `app/dashboard.py`.
+5. Deploy. First load may take a few extra seconds if it has to regenerate
+   the demo outputs; subsequent loads are instant.
+
+The deployed dashboard runs on the labeled SYNTHETIC demo data by default.
+To see it on real data, run the pipeline locally with real yfinance data
+(Section 14), commit the resulting `data/processed/` files, and redeploy.
+
+## 17. Running the SQL Analytics
 
 ```bash
 # from the project root, with the venv activated
@@ -281,7 +311,7 @@ answers. `performance_summary.sql` recomputes total return and max
 drawdown independently in SQL — in this project's test run it matched the
 Python-computed values to the cent, which is a useful cross-check.
 
-## 17. Running Tests
+## 18. Running Tests
 
 ```bash
 pytest tests/ -v
@@ -297,7 +327,7 @@ transaction costs measurably reduce net P&L, an unclosed position at the
 end is excluded from completed-trade stats but still marked-to-market, and
 the benchmark starts from the same capital as the strategy).
 
-## 18. Example Analytical Questions
+## 19. Example Analytical Questions
 
 - What is the cumulative return of the breakout strategy on RELIANCE, and
   how does it compare to just buying and holding RELIANCE?
@@ -307,7 +337,7 @@ the benchmark starts from the same capital as the strategy).
   profit in a handful of trades?
 - How much of the gross profit did transaction costs consume?
 
-## 19. How to Interpret the Charts
+## 20. How to Interpret the Charts
 
 - **Portfolio Performance**: two lines from the same starting capital — if
   the strategy line is below the benchmark line, buy-and-hold would have
@@ -317,25 +347,25 @@ the benchmark starts from the same capital as the strategy).
 - **Monthly Performance**: green bars are positive months, red are
   negative — look for consistency, not just the total.
 
-## 20. Sample Findings (from the synthetic demo data in this repository)
+## 21. Sample Findings (from the synthetic demo data in this repository)
 
 Generated from the actual `data/processed/summary_*.json` files produced in
 this build (synthetic data — not evidence about real NSE stocks):
 
 | Symbol | Total Return | Benchmark Return | Max Drawdown | Win Rate | Completed Trades |
 |---|---|---|---|---|---|
-| RELIANCE | 66.4% | 251.4% | 32.0% | 40.0% | 30 |
-| TCS | 231.9% | 459.3% | 18.1% | 48.3% | 29 |
-| HDFCBANK | 20.5% | 62.1% | 26.6% | 36.7% | 30 |
-| INFY | 340.0% | 1312.8% | 18.2% | 55.2% | 29 |
-| ITC | 156.1% | 445.9% | 24.3% | 46.7% | 30 |
+| RELIANCE | 28.6% | 232.8% | 39.7% | 42.9% | 28 |
+| TCS | 80.0% | 336.7% | 24.2% | 42.9% | 35 |
+| HDFCBANK | 84.0% | 121.0% | 22.6% | 40.7% | 27 |
+| INFY | 310.3% | 1102.6% | 20.4% | 50.0% | 30 |
+| ITC | 211.8% | 538.3% | 29.0% | 46.4% | 28 |
 
 In this synthetic run, buy-and-hold beat the breakout strategy on every
 symbol — a real, data-driven outcome (not hard-coded), illustrating exactly
 why the dashboard never assumes the strategy wins and instead states
 whichever side the numbers actually favor.
 
-## 21. Known Limitations
+## 22. Known Limitations
 
 - NSE's own terms for historical data redistribution could not be verified
   from public sources; Yahoo Finance was used instead for that reason.
@@ -349,7 +379,7 @@ whichever side the numbers actually favor.
 - Dividends are approximated via Adjusted Close, not modeled as discrete
   cash events.
 
-## 22. Assumptions (full list also documented as a docstring in `src/backtest.py`)
+## 23. Assumptions (full list also documented as a docstring in `src/backtest.py`)
 
 Signal timing (shift(1) rolling windows), execution timing (next bar's
 open), execution price (that open, adjusted by slippage), position sizing
@@ -359,7 +389,7 @@ open), execution price (that open, adjusted by slippage), position sizing
 missing observations (no interpolation — only days present in the cleaned
 dataset are traded).
 
-## 23. Future Improvements
+## 24. Future Improvements
 
 - Multi-stock portfolio backtesting with capital allocation across symbols.
 - A configurable short-selling / long-short mode.
@@ -367,7 +397,21 @@ dataset are traded).
 - Parameter sweeps (vary lookback windows) with a results comparison view.
 - Interest on idle cash and a more realistic slippage model.
 
-## 24. Financial Risk Disclaimer
+## 25. Git & Pushing to GitHub
+
+```bash
+git remote add origin <your-repo-url>
+git push -u origin main
+```
+
+If the remote already has commits, pull/rebase first:
+
+```bash
+git pull --rebase origin main
+git push -u origin main
+```
+
+## 26. Financial Risk Disclaimer
 
 This project is for educational purposes only. It analyzes historical data
 and does not place real trades, connect to any brokerage, or use real

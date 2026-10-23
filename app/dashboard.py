@@ -8,6 +8,7 @@ changed configuration.
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -21,7 +22,6 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src.backtest import compute_summary, run_backtest  # noqa: E402
 from src.calculate_kpis import calculate_annualized_return, calculate_monthly_returns  # noqa: E402
 from src.utils import load_config  # noqa: E402
-from src.validate_data import load_latest_raw_csv, validate_dataframe  # noqa: E402
 
 st.set_page_config(page_title="Trading Strategy Performance & Risk Analytics", layout="wide")
 
@@ -29,7 +29,32 @@ CFG = load_config()
 DATA_CFG = CFG["data"]
 STRATEGY_CFG = CFG["strategy"]
 PROCESSED_DIR = PROJECT_ROOT / DATA_CFG["processed_dir"]
-RAW_DIR = PROJECT_ROOT / DATA_CFG["raw_dir"]
+
+
+@st.cache_resource
+def ensure_pipeline_outputs_exist() -> None:
+    """Hosted environments (e.g. Streamlit Community Cloud) only get a git
+    clone of this repo -- there's no MinIO, no prior pipeline run, and the
+    demo Parquet outputs are committed for exactly this reason. This is a
+    safety net in case they're ever missing: it regenerates them from the
+    committed SYNTHETIC sample data (never calls yfinance automatically,
+    since a hosted environment's network behavior is unpredictable).
+    Runs at most once per app process thanks to st.cache_resource.
+    """
+    if (PROCESSED_DIR / "features.parquet").exists():
+        return
+    with st.spinner("First run: generating demo data and backtests..."):
+        run = lambda *args: subprocess.run(args, cwd=PROJECT_ROOT, check=True)  # noqa: E731
+        run(sys.executable, str(PROJECT_ROOT / "data" / "sample" / "generate_synthetic_data.py"))
+        run(sys.executable, "-m", "src.ingest_data", "--use-sample", "--skip-minio")
+        run(sys.executable, "-m", "src.validate_data")
+        run(sys.executable, "-m", "src.transform_data", "--skip-minio")
+        for sym in DATA_CFG["symbols"]:
+            run(sys.executable, "-m", "src.backtest", "--symbol", sym)
+            run(sys.executable, "-m", "src.calculate_kpis", "--symbol", sym)
+
+
+ensure_pipeline_outputs_exist()
 
 
 def fmt_inr(value: float) -> str:
@@ -140,8 +165,8 @@ if history_df.empty:
     st.warning("No data for the selected symbol/date range.")
     st.stop()
 
-symbol_raw = load_latest_raw_csv(RAW_DIR, symbol)
-if symbol_raw is not None and "Data_Source" in symbol_raw.columns and (symbol_raw["Data_Source"] == "SYNTHETIC_DEMO").any():
+symbol_features = features_df[features_df["Symbol"] == symbol]
+if "Data_Source" in symbol_features.columns and (symbol_features["Data_Source"] == "SYNTHETIC_DEMO").any():
     is_synthetic = True
     st.warning(
         "⚠️ SYNTHETIC DEMONSTRATION DATA -- this is NOT real NSE/Yahoo Finance market data. "

@@ -7,8 +7,12 @@ __pycache__/
 .DS_Store
 *.log
 
-# Generated analytical outputs (reproducible from source data + config)
-data/processed/*.parquet
+# Generated analytical outputs are reproducible from source data + config,
+# but the Parquet/JSON backtest outputs ARE committed on purpose: Streamlit
+# Community Cloud only clones this repo (no MinIO, no pipeline run), so the
+# dashboard needs these demo outputs already present to work out of the box.
+# validated_combined.csv and raw ingested CSVs are NOT committed (large,
+# and regenerated locally by running the pipeline).
 data/processed/*.csv
 data/raw/*.csv
 !data/raw/.gitkeep
