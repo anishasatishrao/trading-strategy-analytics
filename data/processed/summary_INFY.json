@@ -1,0 +1,19 @@
+{
+  "initial_capital": 100000.0,
+  "final_portfolio_value": 440005.17777730385,
+  "total_return_pct": 340.00517777730386,
+  "benchmark_return_pct": 1312.7743308835627,
+  "excess_return_pct": -972.7691531062588,
+  "max_drawdown_pct": 18.198173482622828,
+  "win_rate_pct": 55.172413793103445,
+  "completed_trade_count": 29,
+  "gross_profit": 488640.373633074,
+  "gross_loss": -134146.40185512812,
+  "total_transaction_costs": 14488.794000641929,
+  "avg_winning_trade_return_pct": 14.355732597074292,
+  "avg_losing_trade_return_pct": -4.336384947795647,
+  "open_position_at_end": false,
+  "annualized_return_pct": 34.56155140009154,
+  "reliable": true,
+  "reason": null
+}

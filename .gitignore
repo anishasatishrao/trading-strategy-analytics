@@ -1,0 +1,18 @@
+.env
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+*.log
+
+# Generated analytical outputs (reproducible from source data + config)
+data/processed/*.parquet
+data/processed/*.csv
+data/raw/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.duckdb
+
+minio-data/

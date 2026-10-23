@@ -1,0 +1,34 @@
+# Central configuration for the pipeline. Change values here instead of
+# hard-coding them in scripts, so every stage stays consistent.
+
+data:
+  symbols:
+    - RELIANCE
+    - TCS
+    - HDFCBANK
+    - INFY
+    - ITC
+  yfinance_suffix: ".NS"          # NSE ticker suffix for yfinance
+  benchmark_symbol: "NIFTY50"
+  benchmark_yfinance_ticker: "^NSEI"
+  period_years: 5
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+
+storage:
+  raw_bucket: "trading-raw"
+  processed_bucket: "trading-processed"
+
+strategy:
+  # Default stock the single-stock backtest runs on. Change via CLI arg too.
+  default_symbol: "RELIANCE"
+  breakout_lookback_days: 20      # entry: close > highest close of prior N sessions
+  exit_lookback_days: 10          # exit: close < lowest close of prior N sessions
+  initial_capital: 100000.0       # INR
+  position_size_pct: 1.0          # fraction of capital committed per trade (1.0 = all-in)
+  transaction_cost_pct: 0.001     # 0.1% of trade notional, applied on entry and exit
+  slippage_pct: 0.0005            # 0.05% adverse price move assumed on execution
+
+validation:
+  max_allowed_price: 1000000.0
+  min_allowed_price: 0.01
